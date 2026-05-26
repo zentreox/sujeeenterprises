@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { AlertTriangle, Boxes, Package2, Warehouse, ArrowRightLeft, Plus } from "lucide-react";
+import { TriangleAlert as AlertTriangle, Boxes, Package2, Warehouse, ArrowRightLeft, Plus } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { formatCurrency } from "@/lib/db";
 import { StatCard } from "@/components/stat-card";

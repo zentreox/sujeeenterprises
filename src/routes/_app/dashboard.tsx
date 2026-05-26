@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { StatCard } from "@/components/stat-card";
-import { Wallet, ShoppingCart, Users, AlertTriangle, TrendingUp, Truck } from "lucide-react";
+import { Wallet, ShoppingCart, Users, TriangleAlert as AlertTriangle, TrendingUp, Truck } from "lucide-react";
 import {
   ResponsiveContainer,
   AreaChart,

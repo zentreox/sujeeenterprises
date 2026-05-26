@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { Wallet, Users, CheckCircle, Clock, MapPin, DollarSign } from "lucide-react";
+import { Wallet, Users, CircleCheck as CheckCircle, Clock, MapPin, DollarSign } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { formatCurrency } from "@/lib/db";
 import { StatCard } from "@/components/stat-card";

@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
-import { Search, X, Package, Barcode, Edit, Trash2 } from "lucide-react";
+import { Search, X, Package, Barcode, CreditCard as Edit, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
 import { formatCurrency, rupeesToCents, centsToRupees } from "@/lib/db";
