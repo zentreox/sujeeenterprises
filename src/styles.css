@@ -129,3 +129,55 @@
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 }
+
+/* Print Styles */
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Hide everything except the invoice */
+  body > *:not(#invoice-content) {
+    display: none !important;
+  }
+
+  /* Show only the invoice content */
+  #invoice-content,
+  #invoice-content * {
+    display: block !important;
+    visibility: visible !important;
+  }
+
+  #invoice-content {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    background: white !important;
+    color: black !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Reset print-specific elements */
+  #invoice-content .bg-muted\/50 {
+    background: #f5f5f5 !important;
+  }
+
+  #invoice-content .border {
+    border-color: #e5e5e5 !important;
+  }
+
+  /* Hide dialog chrome in print */
+  [role="dialog"] > *:not(#invoice-content) {
+    display: none !important;
+  }
+
+  @page {
+    margin: 1cm;
+    size: A4;
+  }
+}
