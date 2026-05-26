@@ -1,7 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useRef, useState } from "react";
-import { PRODUCTS, fmtLKR, type Product } from "@/lib/mock-data";
+import { fmtLKR, type Product } from "@/lib/mock-data";
+import { useProducts, addInstallment, type InstallmentOrder } from "@/lib/store";
+import { useSession } from "@/hooks/use-session";
 import { ScanBarcode, Search, Trash2, Plus, Minus, ShoppingCart } from "lucide-react";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/_app/pos")({
   component: POSPage,
@@ -12,21 +15,26 @@ type CartItem = { product: Product; qty: number };
 const INSTALLMENT_PERIODS = [3, 6, 9, 12, 18, 24] as const;
 
 function POSPage() {
+  const products = useProducts();
+  const user = useSession();
   const [query, setQuery] = useState("");
   const [cart, setCart] = useState<CartItem[]>([]);
   const [paymentType, setPaymentType] = useState<"cash" | "installment">("cash");
   const [discount, setDiscount] = useState(0);
   const [periodMonths, setPeriodMonths] = useState<number>(6);
   const [downPayment, setDownPayment] = useState<number>(0);
+  const [custName, setCustName] = useState("");
+  const [custNic, setCustNic] = useState("");
+  const [custPhone, setCustPhone] = useState("");
   const barcodeRef = useRef<HTMLInputElement>(null);
 
   const filtered = useMemo(() => {
-    if (!query.trim()) return PRODUCTS;
+    if (!query.trim()) return products;
     const q = query.toLowerCase();
-    return PRODUCTS.filter(
+    return products.filter(
       (p) => p.name.toLowerCase().includes(q) || p.code.toLowerCase().includes(q) || p.barcode.includes(q),
     );
-  }, [query]);
+  }, [query, products]);
 
   const add = (p: Product) => {
     setCart((c) => {
@@ -50,7 +58,7 @@ function POSPage() {
   const onBarcode = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key !== "Enter") return;
     const code = e.currentTarget.value.trim();
-    const p = PRODUCTS.find((x) => x.barcode === code || x.code.toLowerCase() === code.toLowerCase());
+    const p = products.find((x) => x.barcode === code || x.code.toLowerCase() === code.toLowerCase());
     if (p) {
       add(p);
       e.currentTarget.value = "";
@@ -59,11 +67,42 @@ function POSPage() {
 
   const checkout = () => {
     if (!cart.length) return;
-    const extra =
-      paymentType === "installment"
-        ? `\nDown payment: ${fmtLKR(downPayment)}\nPeriod: ${periodMonths} months\nMonthly: ${fmtLKR(Math.round(monthly))}`
-        : "";
-    alert(`Sale completed!\nType: ${paymentType}\nTotal: ${fmtLKR(total)}${extra}`);
+    if (paymentType === "installment") {
+      if (!custName.trim() || !custNic.trim() || !custPhone.trim()) {
+        toast.error("Customer name, NIC and phone are required for installment sales.");
+        return;
+      }
+      const order: InstallmentOrder = {
+        id: `INS-${Date.now().toString(36).toUpperCase()}`,
+        date: new Date().toISOString(),
+        customer: { name: custName.trim(), nic: custNic.trim(), phone: custPhone.trim() },
+        staff: {
+          name: user?.name ?? "Unknown",
+          email: user?.email ?? "",
+          role: user?.role ?? "sales_staff",
+        },
+        items: cart.map((i) => ({
+          productId: i.product.id,
+          name: i.product.name,
+          qty: i.qty,
+          price: priceOf(i.product),
+        })),
+        subtotal,
+        discount,
+        total,
+        downPayment,
+        financed,
+        periodMonths,
+        monthly: Math.round(monthly),
+      };
+      addInstallment(order);
+      toast.success(`Installment order ${order.id} saved for ${order.customer.name}.`);
+      setCustName("");
+      setCustNic("");
+      setCustPhone("");
+    } else {
+      toast.success(`Cash sale completed · ${fmtLKR(total)}`);
+    }
     setCart([]);
     setDiscount(0);
     setDownPayment(0);
@@ -201,6 +240,36 @@ function POSPage() {
           {paymentType === "installment" && (
             <div className="space-y-3 rounded-md border bg-background p-3">
               <div className="space-y-1.5">
+                <label className="text-xs text-muted-foreground">Customer name</label>
+                <input
+                  value={custName}
+                  onChange={(e) => setCustName(e.target.value)}
+                  placeholder="Full name"
+                  className="w-full h-9 px-3 rounded-md border bg-background text-sm outline-none focus:ring-2 focus:ring-ring"
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <div className="space-y-1.5">
+                  <label className="text-xs text-muted-foreground">NIC</label>
+                  <input
+                    value={custNic}
+                    onChange={(e) => setCustNic(e.target.value)}
+                    placeholder="200012345678"
+                    className="w-full h-9 px-3 rounded-md border bg-background text-sm outline-none focus:ring-2 focus:ring-ring"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-xs text-muted-foreground">Phone</label>
+                  <input
+                    value={custPhone}
+                    onChange={(e) => setCustPhone(e.target.value)}
+                    placeholder="07XXXXXXXX"
+                    className="w-full h-9 px-3 rounded-md border bg-background text-sm outline-none focus:ring-2 focus:ring-ring"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-1.5">
                 <label className="text-xs text-muted-foreground">Installment period</label>
                 <div className="grid grid-cols-6 gap-1">
                   {INSTALLMENT_PERIODS.map((m) => (
@@ -246,6 +315,9 @@ function POSPage() {
                 <span className="font-semibold text-primary">
                   {fmtLKR(Math.round(monthly))} × {periodMonths}
                 </span>
+              </div>
+              <div className="text-[11px] text-muted-foreground">
+                Linked to staff: <span className="font-medium text-foreground">{user?.name ?? "—"}</span>
               </div>
             </div>
           )}
