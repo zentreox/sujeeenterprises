@@ -9,11 +9,15 @@ export const Route = createFileRoute("/_app/pos")({
 
 type CartItem = { product: Product; qty: number };
 
+const INSTALLMENT_PERIODS = [3, 6, 9, 12, 18, 24] as const;
+
 function POSPage() {
   const [query, setQuery] = useState("");
   const [cart, setCart] = useState<CartItem[]>([]);
   const [paymentType, setPaymentType] = useState<"cash" | "installment">("cash");
   const [discount, setDiscount] = useState(0);
+  const [periodMonths, setPeriodMonths] = useState<number>(6);
+  const [downPayment, setDownPayment] = useState<number>(0);
   const barcodeRef = useRef<HTMLInputElement>(null);
 
   const filtered = useMemo(() => {
@@ -40,6 +44,8 @@ function POSPage() {
   const priceOf = (p: Product) => (paymentType === "cash" ? p.cashPrice : p.installmentPrice);
   const subtotal = cart.reduce((s, i) => s + priceOf(i.product) * i.qty, 0);
   const total = Math.max(0, subtotal - discount);
+  const financed = Math.max(0, total - (paymentType === "installment" ? downPayment : 0));
+  const monthly = paymentType === "installment" && periodMonths > 0 ? financed / periodMonths : 0;
 
   const onBarcode = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key !== "Enter") return;
@@ -53,9 +59,14 @@ function POSPage() {
 
   const checkout = () => {
     if (!cart.length) return;
-    alert(`Sale completed!\nType: ${paymentType}\nTotal: ${fmtLKR(total)}\nItems: ${cart.reduce((s, i) => s + i.qty, 0)}`);
+    const extra =
+      paymentType === "installment"
+        ? `\nDown payment: ${fmtLKR(downPayment)}\nPeriod: ${periodMonths} months\nMonthly: ${fmtLKR(Math.round(monthly))}`
+        : "";
+    alert(`Sale completed!\nType: ${paymentType}\nTotal: ${fmtLKR(total)}${extra}`);
     setCart([]);
     setDiscount(0);
+    setDownPayment(0);
   };
 
   return (
@@ -92,8 +103,21 @@ function POSPage() {
                 onClick={() => add(p)}
                 className="text-left rounded-lg border bg-background p-3 hover:border-primary hover:shadow-sm transition group"
               >
-                <div className="aspect-square rounded-md bg-muted grid place-items-center mb-2 text-2xl font-semibold text-muted-foreground/60">
-                  {p.name.charAt(0)}
+                <div className="aspect-square rounded-md bg-muted overflow-hidden mb-2">
+                  {p.image ? (
+                    <img
+                      src={p.image}
+                      alt={p.name}
+                      loading="lazy"
+                      width={512}
+                      height={512}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                    />
+                  ) : (
+                    <div className="w-full h-full grid place-items-center text-2xl font-semibold text-muted-foreground/60">
+                      {p.name.charAt(0)}
+                    </div>
+                  )}
                 </div>
                 <div className="text-sm font-medium line-clamp-2 leading-tight">{p.name}</div>
                 <div className="text-xs text-muted-foreground mt-0.5">{p.code}</div>
@@ -121,6 +145,14 @@ function POSPage() {
           {!cart.length && <div className="p-8 text-center text-sm text-muted-foreground">Cart is empty</div>}
           {cart.map((i) => (
             <div key={i.product.id} className="p-3 flex gap-3">
+              {i.product.image && (
+                <img
+                  src={i.product.image}
+                  alt={i.product.name}
+                  loading="lazy"
+                  className="size-12 rounded-md object-cover border shrink-0"
+                />
+              )}
               <div className="flex-1 min-w-0">
                 <div className="text-sm font-medium truncate">{i.product.name}</div>
                 <div className="text-xs text-muted-foreground">{fmtLKR(priceOf(i.product))} × {i.qty}</div>
@@ -166,10 +198,68 @@ function POSPage() {
             />
           </div>
 
+          {paymentType === "installment" && (
+            <div className="space-y-3 rounded-md border bg-background p-3">
+              <div className="space-y-1.5">
+                <label className="text-xs text-muted-foreground">Installment period</label>
+                <div className="grid grid-cols-6 gap-1">
+                  {INSTALLMENT_PERIODS.map((m) => (
+                    <button
+                      key={m}
+                      onClick={() => setPeriodMonths(m)}
+                      className={
+                        "h-8 rounded-md border text-xs font-medium transition " +
+                        (periodMonths === m
+                          ? "bg-primary text-primary-foreground border-primary"
+                          : "bg-background hover:bg-accent")
+                      }
+                    >
+                      {m}m
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs text-muted-foreground">Down payment (Rs)</label>
+                <input
+                  type="number"
+                  value={downPayment}
+                  onChange={(e) => setDownPayment(Math.max(0, Math.min(total, Number(e.target.value) || 0)))}
+                  className="w-full h-9 px-3 rounded-md border bg-background text-sm outline-none focus:ring-2 focus:ring-ring"
+                />
+                <div className="flex gap-1 pt-1">
+                  {[10, 20, 30, 50].map((pct) => (
+                    <button
+                      key={pct}
+                      onClick={() => setDownPayment(Math.round((total * pct) / 100))}
+                      className="flex-1 h-7 rounded border text-xs hover:bg-accent"
+                    >
+                      {pct}%
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between text-sm pt-2 border-t">
+                <span className="text-muted-foreground">Monthly</span>
+                <span className="font-semibold text-primary">
+                  {fmtLKR(Math.round(monthly))} × {periodMonths}
+                </span>
+              </div>
+            </div>
+          )}
+
           <div className="space-y-1 text-sm">
             <div className="flex justify-between"><span className="text-muted-foreground">Subtotal</span><span>{fmtLKR(subtotal)}</span></div>
             <div className="flex justify-between"><span className="text-muted-foreground">Discount</span><span>− {fmtLKR(discount)}</span></div>
-            <div className="flex justify-between text-base font-semibold pt-2 border-t"><span>Total</span><span>{fmtLKR(total)}</span></div>
+            {paymentType === "installment" && (
+              <div className="flex justify-between"><span className="text-muted-foreground">Down payment</span><span>− {fmtLKR(downPayment)}</span></div>
+            )}
+            <div className="flex justify-between text-base font-semibold pt-2 border-t">
+              <span>{paymentType === "installment" ? "To finance" : "Total"}</span>
+              <span>{fmtLKR(paymentType === "installment" ? financed : total)}</span>
+            </div>
           </div>
 
           <button
