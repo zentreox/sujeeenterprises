@@ -32,17 +32,28 @@ export type Purchase = {
   status: "received" | "pending";
 };
 
+import p001 from "@/assets/products/p001.jpg";
+import p002 from "@/assets/products/p002.jpg";
+import p003 from "@/assets/products/p003.jpg";
+import p004 from "@/assets/products/p004.jpg";
+import p005 from "@/assets/products/p005.jpg";
+import p006 from "@/assets/products/p006.jpg";
+import p007 from "@/assets/products/p007.jpg";
+import p008 from "@/assets/products/p008.jpg";
+import p009 from "@/assets/products/p009.jpg";
+import p010 from "@/assets/products/p010.jpg";
+
 export const PRODUCTS: Product[] = [
-  { id: "P001", name: "Singer Rice Cooker 2.8L", code: "RC-28", barcode: "4891234500011", category: "Kitchen", brand: "Singer", costPrice: 8500, cashPrice: 11500, installmentPrice: 13900, warehouseQty: 42, lowStockAt: 10 },
-  { id: "P002", name: "Abans Electric Kettle", code: "EK-15", barcode: "4891234500028", category: "Kitchen", brand: "Abans", costPrice: 3200, cashPrice: 4500, installmentPrice: 5400, warehouseQty: 18, lowStockAt: 10 },
-  { id: "P003", name: "Innovex Stand Fan 16\"", code: "SF-16", barcode: "4891234500035", category: "Appliances", brand: "Innovex", costPrice: 7800, cashPrice: 10900, installmentPrice: 13200, warehouseQty: 27, lowStockAt: 8 },
-  { id: "P004", name: "LG TV 32\" HD", code: "TV-32H", barcode: "4891234500042", category: "Electronics", brand: "LG", costPrice: 42000, cashPrice: 54900, installmentPrice: 64500, warehouseQty: 9, lowStockAt: 5 },
-  { id: "P005", name: "Singer Gas Cooker 2B", code: "GC-2B", barcode: "4891234500059", category: "Kitchen", brand: "Singer", costPrice: 11500, cashPrice: 15400, installmentPrice: 18200, warehouseQty: 14, lowStockAt: 6 },
-  { id: "P006", name: "Hitachi Refrigerator 190L", code: "RF-190", barcode: "4891234500066", category: "Appliances", brand: "Hitachi", costPrice: 78000, cashPrice: 96500, installmentPrice: 114000, warehouseQty: 6, lowStockAt: 4 },
-  { id: "P007", name: "Damro Plastic Chair", code: "PC-01", barcode: "4891234500073", category: "Furniture", brand: "Damro", costPrice: 1800, cashPrice: 2600, installmentPrice: 3100, warehouseQty: 120, lowStockAt: 30 },
-  { id: "P008", name: "Philips Iron Steam", code: "IR-ST", barcode: "4891234500080", category: "Appliances", brand: "Philips", costPrice: 4200, cashPrice: 5900, installmentPrice: 7100, warehouseQty: 4, lowStockAt: 8 },
-  { id: "P009", name: "Singer Sewing Machine", code: "SM-01", barcode: "4891234500097", category: "Appliances", brand: "Singer", costPrice: 28000, cashPrice: 36500, installmentPrice: 43500, warehouseQty: 11, lowStockAt: 4 },
-  { id: "P010", name: "Innovex Blender 1.5L", code: "BL-15", barcode: "4891234500103", category: "Kitchen", brand: "Innovex", costPrice: 3900, cashPrice: 5400, installmentPrice: 6500, warehouseQty: 22, lowStockAt: 10 },
+  { id: "P001", name: "Singer Rice Cooker 2.8L", code: "RC-28", barcode: "4891234500011", category: "Kitchen", brand: "Singer", costPrice: 8500, cashPrice: 11500, installmentPrice: 13900, warehouseQty: 42, lowStockAt: 10, image: p001 },
+  { id: "P002", name: "Abans Electric Kettle", code: "EK-15", barcode: "4891234500028", category: "Kitchen", brand: "Abans", costPrice: 3200, cashPrice: 4500, installmentPrice: 5400, warehouseQty: 18, lowStockAt: 10, image: p002 },
+  { id: "P003", name: "Innovex Stand Fan 16\"", code: "SF-16", barcode: "4891234500035", category: "Appliances", brand: "Innovex", costPrice: 7800, cashPrice: 10900, installmentPrice: 13200, warehouseQty: 27, lowStockAt: 8, image: p003 },
+  { id: "P004", name: "LG TV 32\" HD", code: "TV-32H", barcode: "4891234500042", category: "Electronics", brand: "LG", costPrice: 42000, cashPrice: 54900, installmentPrice: 64500, warehouseQty: 9, lowStockAt: 5, image: p004 },
+  { id: "P005", name: "Singer Gas Cooker 2B", code: "GC-2B", barcode: "4891234500059", category: "Kitchen", brand: "Singer", costPrice: 11500, cashPrice: 15400, installmentPrice: 18200, warehouseQty: 14, lowStockAt: 6, image: p005 },
+  { id: "P006", name: "Hitachi Refrigerator 190L", code: "RF-190", barcode: "4891234500066", category: "Appliances", brand: "Hitachi", costPrice: 78000, cashPrice: 96500, installmentPrice: 114000, warehouseQty: 6, lowStockAt: 4, image: p006 },
+  { id: "P007", name: "Damro Plastic Chair", code: "PC-01", barcode: "4891234500073", category: "Furniture", brand: "Damro", costPrice: 1800, cashPrice: 2600, installmentPrice: 3100, warehouseQty: 120, lowStockAt: 30, image: p007 },
+  { id: "P008", name: "Philips Iron Steam", code: "IR-ST", barcode: "4891234500080", category: "Appliances", brand: "Philips", costPrice: 4200, cashPrice: 5900, installmentPrice: 7100, warehouseQty: 4, lowStockAt: 8, image: p008 },
+  { id: "P009", name: "Singer Sewing Machine", code: "SM-01", barcode: "4891234500097", category: "Appliances", brand: "Singer", costPrice: 28000, cashPrice: 36500, installmentPrice: 43500, warehouseQty: 11, lowStockAt: 4, image: p009 },
+  { id: "P010", name: "Innovex Blender 1.5L", code: "BL-15", barcode: "4891234500103", category: "Kitchen", brand: "Innovex", costPrice: 3900, cashPrice: 5400, installmentPrice: 6500, warehouseQty: 22, lowStockAt: 10, image: p010 },
 ];
 
 export const SALES: Sale[] = Array.from({ length: 24 }).map((_, i) => {
