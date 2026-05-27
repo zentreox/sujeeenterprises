@@ -171,7 +171,7 @@ function POSPage() {
       const warehouseId = warehouses?.[0]?.id;
 
       // Create sale
-      const saleItems = cart.map((i) => ({
+      const saleItems: any[] = cart.map((i) => ({
         product_id: i.product.id,
         quantity: i.qty,
         unit_price: priceOf(i.product),
@@ -182,7 +182,7 @@ function POSPage() {
         sale_type: paymentType,
         customer_id: customerId,
         warehouse_id: warehouseId,
-        staff_id: user?.id,
+        staff_id: (user as any)?.id,
         subtotal,
         discount: discountCents,
         total,
@@ -210,7 +210,7 @@ function POSPage() {
           period_months: periodMonths,
           start_date: new Date().toISOString().split("T")[0],
           status: "pending",
-          staff_id: user?.id,
+          staff_id: (user as any)?.id,
         });
 
         // Create installment schedule
@@ -753,7 +753,7 @@ function InvoiceDialog({
             <X className="size-4 mr-2" />
             Close
           </Button>
-          <Button onClick={handlePrint}>
+          <Button onClick={() => window.print()}>
             <Printer className="size-4 mr-2" />
             Print Invoice
           </Button>

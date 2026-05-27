@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getSession, type SessionUser } from "@/lib/auth";
+import { getSession, type SessionUser } from "@/lib/auth-db";
 
 export function useSession(): SessionUser | null {
   const [user, setUser] = useState<SessionUser | null>(() => getSession());
