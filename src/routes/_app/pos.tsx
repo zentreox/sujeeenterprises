@@ -75,7 +75,7 @@ function POSPage() {
     if (!query.trim()) return products;
     const q = query.toLowerCase();
     return products.filter(
-      (p) =>
+      (p: any) =>
         p.name.toLowerCase().includes(q) ||
         p.code.toLowerCase().includes(q) ||
         (p.barcode && p.barcode.includes(q))
@@ -115,7 +115,7 @@ function POSPage() {
     if (e.key !== "Enter") return;
     const code = e.currentTarget.value.trim();
     const p = products.find(
-      (x) => x.barcode === code || x.code.toLowerCase() === code.toLowerCase()
+      (x: any) => x.barcode === code || x.code.toLowerCase() === code.toLowerCase()
     );
     if (p) {
       add(p);
@@ -171,7 +171,7 @@ function POSPage() {
       const warehouseId = warehouses?.[0]?.id;
 
       // Create sale
-      const saleItems = cart.map((i) => ({
+      const saleItems: any[] = cart.map((i) => ({
         product_id: i.product.id,
         quantity: i.qty,
         unit_price: priceOf(i.product),
@@ -182,7 +182,7 @@ function POSPage() {
         sale_type: paymentType,
         customer_id: customerId,
         warehouse_id: warehouseId,
-        staff_id: user?.id,
+        staff_id: (user as any)?.id,
         subtotal,
         discount: discountCents,
         total,
@@ -210,7 +210,7 @@ function POSPage() {
           period_months: periodMonths,
           start_date: new Date().toISOString().split("T")[0],
           status: "pending",
-          staff_id: user?.id,
+          staff_id: (user as any)?.id,
         });
 
         // Create installment schedule
@@ -305,7 +305,7 @@ function POSPage() {
 
           <div className="flex-1 overflow-y-auto p-4">
             <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 xl:grid-cols-4">
-              {filtered.map((p) => (
+              {filtered.map((p: any) => (
                 <button
                   key={p.id}
                   onClick={() => add(p)}
@@ -753,7 +753,7 @@ function InvoiceDialog({
             <X className="size-4 mr-2" />
             Close
           </Button>
-          <Button onClick={handlePrint}>
+          <Button onClick={() => window.print()}>
             <Printer className="size-4 mr-2" />
             Print Invoice
           </Button>

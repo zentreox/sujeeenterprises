@@ -1,7 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { login, ROLE_LABEL, type Role } from "@/lib/auth";
+import { signIn, ROLE_LABEL, type Role } from "@/lib/auth-db";
 import { Building2 } from "lucide-react";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/login")({
   component: LoginPage,
@@ -12,14 +13,25 @@ const ROLES: Role[] = ["admin", "stock_manager", "lorry_manager", "sales_staff",
 function LoginPage() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("owner@sujee.lk");
-  const [password, setPassword] = useState("demo");
+  const [password, setPassword] = useState("password123");
   const [role, setRole] = useState<Role>("admin");
+  const [busy, setBusy] = useState(false);
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !password) return;
-    login(email, role);
-    navigate({ to: "/dashboard" });
+    if (!email || !password || busy) return;
+    setBusy(true);
+    try {
+      const user = await signIn(email, password, role);
+      if (user) {
+        toast.success(`Welcome, ${user.name}`);
+        navigate({ to: "/dashboard" });
+      } else {
+        toast.error("Sign-in failed. Check email/password.");
+      }
+    } finally {
+      setBusy(false);
+    }
   };
 
   return (
@@ -87,9 +99,10 @@ function LoginPage() {
 
           <button
             type="submit"
-            className="w-full h-10 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
+            disabled={busy}
+            className="w-full h-10 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors disabled:opacity-60"
           >
-            Sign in
+            {busy ? "Signing in…" : "Sign in"}
           </button>
         </form>
       </div>

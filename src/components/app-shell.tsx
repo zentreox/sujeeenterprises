@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { useSession } from "@/hooks/use-session";
-import { clearSession, ROLE_LABEL, type Role } from "@/lib/auth";
+import { clearSession, ROLE_LABEL, type Role } from "@/lib/auth-db";
 import { useNavigate } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
 
