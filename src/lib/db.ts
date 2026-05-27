@@ -687,17 +687,17 @@ export async function getDashboardStats() {
       products!inner(id, name, low_stock_threshold)
     `);
 
-  const todayTotal = (todaySales || []).reduce((sum, s) => sum + s.total, 0);
+  const todayTotal = (todaySales || []).reduce((sum: number, s: any) => sum + s.total, 0);
   const todayCash = (todaySales || [])
-    .filter((s) => s.sale_type === "cash")
-    .reduce((sum, s) => sum + s.total, 0);
+    .filter((s: any) => s.sale_type === "cash")
+    .reduce((sum: number, s: any) => sum + s.total, 0);
   const todayInstallment = (todaySales || [])
-    .filter((s) => s.sale_type === "installment")
-    .reduce((sum, s) => sum + s.total, 0);
-  const monthTotal = (monthSales || []).reduce((sum, s) => sum + s.total, 0);
-  const outstandingTotal = (outstanding || []).reduce((sum, o) => sum + o.financed_amount, 0);
+    .filter((s: any) => s.sale_type === "installment")
+    .reduce((sum: number, s: any) => sum + s.total, 0);
+  const monthTotal = (monthSales || []).reduce((sum: number, s: any) => sum + s.total, 0);
+  const outstandingTotal = (outstanding || []).reduce((sum: number, o: any) => sum + o.financed_amount, 0);
   const lowStockCount = (warehouseInventory || []).filter(
-    (i) => i.quantity <= (i.products as any).low_stock_threshold
+    (i: any) => i.quantity <= (i.products as any).low_stock_threshold
   ).length;
 
   return {

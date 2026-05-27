@@ -1,7 +1,7 @@
-// Loose-typed re-export of the canonical Lovable Cloud client so legacy db.ts/auth-db.ts
-// (written for Bolt's manual interfaces) keep compiling without fighting generated types.
 import { supabase as typedClient } from "@/integrations/supabase/client";
 export const supabase = typedClient as any;
+export type Database = any;
+
 
 
 // Type-safe database schema

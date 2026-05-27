@@ -75,7 +75,7 @@ function POSPage() {
     if (!query.trim()) return products;
     const q = query.toLowerCase();
     return products.filter(
-      (p) =>
+      (p: any) =>
         p.name.toLowerCase().includes(q) ||
         p.code.toLowerCase().includes(q) ||
         (p.barcode && p.barcode.includes(q))
@@ -115,7 +115,7 @@ function POSPage() {
     if (e.key !== "Enter") return;
     const code = e.currentTarget.value.trim();
     const p = products.find(
-      (x) => x.barcode === code || x.code.toLowerCase() === code.toLowerCase()
+      (x: any) => x.barcode === code || x.code.toLowerCase() === code.toLowerCase()
     );
     if (p) {
       add(p);
@@ -305,7 +305,7 @@ function POSPage() {
 
           <div className="flex-1 overflow-y-auto p-4">
             <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 xl:grid-cols-4">
-              {filtered.map((p) => (
+              {filtered.map((p: any) => (
                 <button
                   key={p.id}
                   onClick={() => add(p)}

@@ -123,7 +123,7 @@ function ProductsPage() {
                 </tr>
               </thead>
               <tbody>
-                {products.map((p) => {
+                {products.map((p: any) => {
                   const product = p as any;
                   return (
                     <tr key={p.id} className="border-t hover:bg-muted/30">
