@@ -1,19 +1,6 @@
-import { createClient } from "@supabase/supabase-js";
+// Re-export the canonical Lovable Cloud Supabase client so existing imports keep working.
+export { supabase } from "@/integrations/supabase/client";
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error("Missing Supabase environment variables");
-}
-
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-  auth: {
-    persistSession: true,
-    autoRefreshToken: true,
-    detectSessionInUrl: true,
-  },
-});
 
 // Type-safe database schema
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
