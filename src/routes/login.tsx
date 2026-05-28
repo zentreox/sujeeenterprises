@@ -29,6 +29,8 @@ function LoginPage() {
       } else {
         toast.error("Sign-in failed. Check email/password.");
       }
+    } catch (err: any) {
+      toast.error(err?.message || "Sign-in failed.");
     } finally {
       setBusy(false);
     }
