@@ -96,7 +96,7 @@ export async function signIn(email: string, password: string, role: Role): Promi
       }
     } else {
       console.error("Auth error:", authError);
-      return null;
+      throw new Error(authError.message);
     }
   } else if (authData.user) {
     // Get user from users table
