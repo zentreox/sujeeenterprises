@@ -410,7 +410,7 @@ function POSPage() {
             ))}
           </div>
 
-          <div className="border-t p-4 space-y-3 bg-muted/30">
+          <div className="border-t p-4 space-y-3 bg-muted/30 flex-1 overflow-y-auto">
             <div className="grid grid-cols-2 gap-2">
               {(["cash", "installment"] as const).map((t) => (
                 <button
