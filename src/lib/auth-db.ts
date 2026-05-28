@@ -64,7 +64,7 @@ export async function signIn(email: string, password: string, role: Role): Promi
 
       if (signUpError) {
         console.error("Sign up error:", signUpError);
-        return null;
+        throw new Error(signUpError.message);
       }
 
       if (signUpData.user) {
