@@ -10,19 +10,15 @@ import {
   ShoppingCart,
   Boxes,
   Settings,
-  LogOut,
   Menu,
   X,
   Building2,
   TrendingUp,
 } from "lucide-react";
 import { useState } from "react";
-import { useSession } from "@/hooks/use-session";
-import { clearSession, ROLE_LABEL, type Role } from "@/lib/auth-db";
-import { useNavigate } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
 
-type NavItem = { to: string; label: string; icon: typeof LayoutDashboard; roles?: Role[] };
+type NavItem = { to: string; label: string; icon: typeof LayoutDashboard };
 
 const NAV: NavItem[] = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -31,24 +27,19 @@ const NAV: NavItem[] = [
   { to: "/products", label: "Products", icon: Package },
   { to: "/sales", label: "Sales", icon: ShoppingCart },
   { to: "/purchases", label: "Purchases", icon: ReceiptText },
-  { to: "/lorries", label: "Lorries", icon: Truck, roles: ["admin", "lorry_manager"] },
-  { to: "/customers", label: "Customers", icon: Users, roles: ["admin", "lorry_manager", "sales_staff", "collector"] },
-  { to: "/collections", label: "Collections", icon: Wallet, roles: ["admin", "collector"] },
-  { to: "/reports", label: "Reports", icon: TrendingUp, roles: ["admin", "stock_manager", "lorry_manager"] },
-  { to: "/settings", label: "Settings", icon: Settings, roles: ["admin"] },
+  { to: "/lorries", label: "Lorries", icon: Truck },
+  { to: "/customers", label: "Customers", icon: Users },
+  { to: "/collections", label: "Collections", icon: Wallet },
+  { to: "/reports", label: "Reports", icon: TrendingUp },
+  { to: "/settings", label: "Settings", icon: Settings },
 ];
 
 export function AppShell({ children }: { children: React.ReactNode }) {
-  const user = useSession();
-  const navigate = useNavigate();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const [open, setOpen] = useState(false);
 
-  const items = NAV.filter((n) => !n.roles || (user && n.roles.includes(user.role)));
-
   return (
     <div className="min-h-screen flex w-full bg-background">
-      {/* Sidebar */}
       <aside
         className={cn(
           "fixed inset-y-0 left-0 z-40 w-64 bg-sidebar text-sidebar-foreground flex flex-col transition-transform lg:translate-x-0",
@@ -66,7 +57,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </div>
 
         <nav className="flex-1 overflow-y-auto py-3 px-3 space-y-0.5">
-          {items.map((item) => {
+          {NAV.map((item) => {
             const Active = pathname === item.to || pathname.startsWith(item.to + "/");
             const Icon = item.icon;
             return (
@@ -90,22 +81,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
         <div className="border-t border-sidebar-border p-3">
           <div className="px-2 py-2">
-            <div className="text-sm font-medium truncate">{user?.name ?? "Guest"}</div>
-            <div className="text-xs text-sidebar-foreground/70">{user ? ROLE_LABEL[user.role] : "Not signed in"}</div>
+            <div className="text-sm font-medium truncate">Sujee Enterprises</div>
+            <div className="text-xs text-sidebar-foreground/70">Business Suite</div>
           </div>
-          <button
-            onClick={() => {
-              clearSession();
-              navigate({ to: "/login" });
-            }}
-            className="w-full mt-1 flex items-center gap-2 rounded-md px-3 py-2 text-sm text-sidebar-foreground/85 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-          >
-            <LogOut className="size-4" /> Sign out
-          </button>
         </div>
       </aside>
 
-      {/* Mobile overlay */}
       {open && (
         <button
           aria-label="Close menu"
@@ -124,12 +105,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             {open ? <X className="size-5" /> : <Menu className="size-5" />}
           </button>
           <div className="font-medium text-sm text-muted-foreground">
-            {items.find((i) => pathname === i.to || pathname.startsWith(i.to + "/"))?.label ?? "Sujee Enterprises"}
-          </div>
-          <div className="ml-auto flex items-center gap-2">
-            <div className="hidden sm:block text-xs text-muted-foreground">
-              {new Date().toLocaleDateString("en-LK", { weekday: "long", year: "numeric", month: "short", day: "numeric" })}
-            </div>
+            {NAV.find((i) => pathname === i.to || pathname.startsWith(i.to + "/"))?.label ?? "Sujee Enterprises"}
           </div>
         </header>
 
