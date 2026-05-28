@@ -358,7 +358,7 @@ function POSPage() {
             </div>
           </div>
 
-          <div className="flex-1 overflow-y-auto divide-y">
+          <div className="flex-none max-h-[35vh] overflow-y-auto divide-y">
             {!cart.length && (
               <div className="p-8 text-center text-sm text-muted-foreground">
                 Cart is empty
